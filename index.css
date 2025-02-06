@@ -54,4 +54,23 @@ body {
   width: 12rem;
   padding: 10px;
   border: 1px solid black;
+  background-color: beige;
+}
+
+.filter {
+  display: flex;
+  align-items: center;
+}
+
+.filter-button {
+  padding: 5px;
+  margin: 10px;
+  cursor: pointer;
+}
+.search {
+  margin-right: 10px;
+}
+
+.searchbar {
+  padding: 5px;
 }
