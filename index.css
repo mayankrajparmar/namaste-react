@@ -32,6 +32,7 @@ body {
 .nav-menu > ul {
   list-style: none;
   display: flex;
+  align-items: center;
   gap: 15px;
 }
 
@@ -73,4 +74,21 @@ body {
 
 .searchbar {
   padding: 5px;
+}
+
+.log-button {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.shimmer-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.shimmer-box {
+  width: 200px;
+  height: 400px;
+  margin: 24px;
+  background-color: #f0f0f0;
 }
