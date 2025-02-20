@@ -2,12 +2,14 @@ import RestaurantCard from "./RestaurantCard";
 // import restaurantList from "../utils/mockData";
 import { useState, useEffect } from "react";
 import ShimmerComponent from "./ShimmerComponent";
+import { Link } from "react-router-dom";
+import useRestaurant from "../utils/useRestaurant";
+import useOnlineStatus from "../utils/useOnlineStatus";
 
 const BodyComponent = () => {
   const [searchText, setSearchText] = useState("");
-  const [originalData, setOriginalData] = useState([]);
-  const [data, setData] = useState([]);
   const [topFlag, setTopFlag] = useState(false);
+  const [originalData, data, setData] = useRestaurant();
 
   const handleSearchChange = (e) => {
     setSearchText(e.target.value);
@@ -29,10 +31,6 @@ const BodyComponent = () => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  useEffect(() => {
     if (topFlag) {
       const filteredData = data.filter((res) => res.info.avgRating > 4.2);
       setData(filteredData);
@@ -42,34 +40,19 @@ const BodyComponent = () => {
     }
   }, [topFlag]);
 
-  const fetchData = async () => {
-    try {
-      const res = await fetch(
-        "https://www.swiggy.com/dapi/restaurants/list/v5?lat=12.9953514&lng=77.65883749999999&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING",
-        {
-          mode: "cors",
-          headers: { "User-Agent": "Mozilla/5.0" },
-        }
-      );
+  const onlineStatus = useOnlineStatus();
 
-      if (!res.ok) {
-        throw new Error(`HTTP error! Status: ${res.status}`);
-      }
+  if (onlineStatus == false)
+    return (
+      <h1>
+        Looks Like You Are Offline!😐 <br />
+        Please check your internet connection.
+      </h1>
+    );
 
-      const resData = await res.json();
-      const restaurantList =
-        resData?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle
-          ?.restaurants;
-      setOriginalData(restaurantList);
-      setData(restaurantList);
-    } catch (error) {
-      console.error("Fetch error:", error);
-    }
-  };
+  if (originalData.length == 0) return <ShimmerComponent />;
 
-  return originalData.length == 0 ? (
-    <ShimmerComponent />
-  ) : (
+  return (
     <div className="body">
       <h1>Restaurant List</h1>
       <div className="filter">
@@ -101,7 +84,16 @@ const BodyComponent = () => {
       </div>
       <div className="card-box">
         {data.map((item) => {
-          return <RestaurantCard {...item.info} key={item.info.id} />;
+          return (
+            <Link
+              style={{ textDecoration: "none" }}
+              className="link"
+              key={item.info.id}
+              to={`/restaurant/${item.info.id}`}
+            >
+              <RestaurantCard {...item.info} />
+            </Link>
+          );
         })}
       </div>
     </div>
